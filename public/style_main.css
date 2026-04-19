@@ -1,0 +1,185 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Jersey 10', sans-serif;
+  letter-spacing: 1px;
+}
+
+body {
+  background: linear-gradient(to bottom, #323232 0%, #3F3F3F 40%, #000000 150%),
+              linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%);
+  background-blend-mode: multiply;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.top {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  color: rgb(255,255,255);
+  position: relative;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.heading {
+  font-size: 90px;
+  text-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+/* ── Chat status bar ────────────────────────────────────────────────────────── */
+.chat-status-bar {
+  font-family: sans-serif;
+  font-size: 13px;
+  letter-spacing: 0;
+  color: transparent;
+  height: 16px;
+  transition: color 0.3s;
+}
+.chat-status-bar.show { color: rgba(255,255,255,0.7); }
+.chat-status-bar.show.success { color: #81c784; }
+.chat-status-bar.show.warn { color: #ffb74d; }
+
+/* ── Main card ──────────────────────────────────────────────────────────────── */
+.main {
+  background: #C9CCD3;
+  background-image: linear-gradient(-180deg, rgba(255,255,255,0.50) 0%, rgba(0,0,0,0.50) 100%);
+  background-blend-mode: lighten;
+  width: 95%;
+  max-width: 750px;
+  min-width: 300px;
+  height: 55vh;
+  min-height: 300px;
+  border-radius: 50px;
+  box-shadow: 0px 0px 10px rgba(20,20,20,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 2%;
+  padding-bottom: 3%;
+}
+
+.inside {
+  width: 95%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.people {
+  text-align: center;
+  padding: 6px;
+  font-size: 28px;
+}
+
+.chatcase {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatbox {
+  flex: 10;
+  height: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0px 0px 10px rgba(20,20,20,0.4);
+  transition: box-shadow 0.3s;
+}
+.chatbox.flash {
+  box-shadow: 0px 0px 18px rgba(80,200,80,0.7);
+}
+
+.leftdiv  { flex: 1; text-align: center; padding: 1%; }
+.rightdiv { flex: 1; text-align: center; padding: 1%; }
+
+.rightbtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0px 0px 6px rgba(20,20,20,0.6);
+  background-color: rgb(71,70,70);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.rightbtn:hover { background-color: rgb(90,90,90); transform: scale(1.1); }
+.rightbtn:active { transform: scale(0.93); }
+
+.copy {
+  stroke: rgb(180,180,180);
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.leftbtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 4px solid rgb(35,35,35);
+  background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+  box-shadow: 0px 0px 6px rgba(20,20,20,0.6);
+  cursor: default;
+  transition: background-image 0.5s ease, box-shadow 0.3s;
+}
+
+textarea {
+  font-family: sans-serif, arial, Helvetica;
+  font-weight: 500;
+  width: 100%;
+  height: 100%;
+  resize: none;
+  border: none;
+  padding: 16px;
+  font-size: 20px;
+  outline: none;
+  overflow: auto;
+  transition: background 0.2s;
+}
+textarea:focus { background: #fafafa; }
+
+.bottom {
+  flex: 1;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+}
+
+.ghost-btn {
+  margin-top: 3%;
+  padding: 6px 22px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.1);
+  color: #ccc;
+  font-size: 22px;
+  font-family: 'Jersey 10', sans-serif;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0px 0px 10px rgba(20,20,20,0.4);
+}
+.ghost-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  transform: scale(1.05);
+}
+.ghost-btn:active { transform: scale(0.97); }

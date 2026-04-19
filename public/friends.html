@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instalk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style_friends.css">
+</head>
+<body>
+
+  <div class="top">
+    <p class="heading">Instalk</p>
+    <button id="logoutBtn" class="logout-btn">logout</button>
+  </div>
+
+  <div id="inviteBanner" class="invite-banner hidden">
+    <span id="inviteText"></span>
+    <div class="invite-actions">
+      <button id="acceptInviteBtn" class="invite-btn accept">accept</button>
+      <button id="declineInviteBtn" class="invite-btn decline">decline</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="add-friend">
+      <input id="friendInput" class="input" type="text" placeholder="Enter username to add...">
+      <button id="addBtn" class="add">add</button>
+    </div>
+    <div id="statusMsg" class="status-msg"></div>
+    <div class="friends">
+      <div class="dummy" id="friendsContainer"></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <button id="connectBtn" class="ghost-btn">connect</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    let myUsername = null;
+    let selectedFriend = null;
+    let pendingFrom = null;
+    const socket = io();
+
+    fetch("/me").then(r => r.json()).then(d => {
+      if (!d.success) { window.location.href = "/login.html"; return; }
+      myUsername = d.username;
+      socket.emit("register", myUsername);
+      socket.emit("get_friends_status");
+      loadFriends();
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await fetch("/logout", { method: "POST" });
+      window.location.href = "/login.html";
+    });
+
+    function showStatus(msg, type = "info", duration = 3000) {
+      const el = document.getElementById("statusMsg");
+      el.textContent = msg;
+      el.className = "status-msg show " + type;
+      if (duration) setTimeout(() => { el.className = "status-msg"; }, duration);
+    }
+
+    async function loadFriends() {
+      const res = await fetch("/friends");
+      const data = await res.json();
+      renderAll(data);
+    }
+
+    function renderAll(data) {
+      const container = document.getElementById("friendsContainer");
+      container.innerHTML = "";
+      (data.incoming || []).forEach(u => container.appendChild(createRequestEl(u)));
+      if (!(data.friends || []).length && !(data.incoming || []).length) {
+        const p = document.createElement("p");
+        p.className = "empty-msg";
+        p.textContent = "No friends yet. Add someone!";
+        container.appendChild(p);
+      } else {
+        (data.friends || []).forEach(f => container.appendChild(createFriendEl(f.username, f.online)));
+      }
+      (data.outgoing || []).forEach(u => container.appendChild(createPendingEl(u)));
+    }
+
+    function createRequestEl(username) {
+      const div = document.createElement("div");
+      div.className = "friend-list request-item";
+      div.innerHTML = `
+        <div class="friend-name">📩 <b>${username}</b> wants to be friends</div>
+        <div class="request-actions">
+          <button class="req-btn accept-req">✓</button>
+          <button class="req-btn decline-req">✗</button>
+        </div>`;
+      div.querySelector(".accept-req").addEventListener("click", () => acceptRequest(username));
+      div.querySelector(".decline-req").addEventListener("click", () => declineRequest(username));
+      return div;
+    }
+
+    function createFriendEl(username, online) {
+      const div = document.createElement("div");
+      div.className = "friend-list";
+      div.dataset.username = username;
+      div.innerHTML = `
+        <div class="friend-name">• ${username}</div>
+        <div class="activity-status">
+          <button class="remove-btn" title="Remove friend">✕</button>
+          <div class="status" id="status-${username}" style="background-image:${dotGradient(online)}"></div>
+        </div>`;
+      div.addEventListener("click", (e) => {
+        if (e.target.classList.contains("remove-btn")) return;
+        document.querySelectorAll(".friend-list").forEach(el => el.classList.remove("selected"));
+        selectedFriend = username;
+        div.classList.add("selected");
+      });
+      div.querySelector(".remove-btn").addEventListener("click", () => removeFriend(username));
+      return div;
+    }
+
+    function createPendingEl(username) {
+      const div = document.createElement("div");
+      div.className = "friend-list pending-item";
+      div.innerHTML = `<div class="friend-name" style="color:#888">⏳ ${username} (pending)</div>`;
+      return div;
+    }
+
+    function dotGradient(online) {
+      return online
+        ? "linear-gradient(to top, #0fd850 0%, #f9f047 100%)"
+        : "linear-gradient(to top, #ff0844 0%, #ffb199 100%)";
+    }
+
+    function updateDot(username, online) {
+      const dot = document.getElementById(`status-${username}`);
+      if (dot) dot.style.backgroundImage = dotGradient(online);
+    }
+
+    async function acceptRequest(fromUsername) {
+      const res = await fetch("/friends/accept", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fromUsername })
+      });
+      if ((await res.json()).success) {
+        showStatus(`You and ${fromUsername} are now friends!`, "success");
+        loadFriends();
+      }
+    }
+
+    async function declineRequest(fromUsername) {
+      await fetch("/friends/decline", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fromUsername })
+      });
+      loadFriends();
+    }
+
+    async function removeFriend(friendUsername) {
+      const res = await fetch("/friends/remove", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ friendUsername })
+      });
+      if ((await res.json()).success) {
+        if (selectedFriend === friendUsername) selectedFriend = null;
+        showStatus(`Removed ${friendUsername}`, "info");
+        loadFriends();
+      }
+    }
+
+    document.getElementById("addBtn").addEventListener("click", async () => {
+      const friendUsername = document.getElementById("friendInput").value.trim();
+      if (!friendUsername) return;
+      const res = await fetch("/friends/request", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ friendUsername })
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById("friendInput").value = "";
+        showStatus(`Friend request sent to ${friendUsername}!`, "success");
+        loadFriends();
+      } else {
+        showStatus(data.message, "error");
+      }
+    });
+
+    document.getElementById("friendInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") document.getElementById("addBtn").click();
+    });
+
+    socket.on("friends_status", statuses => {
+      Object.entries(statuses).forEach(([u, online]) => updateDot(u, online));
+    });
+    socket.on("friend_status_change", ({ username, online }) => updateDot(username, online));
+    socket.on("friend_request", ({ from }) => { showStatus(`${from} sent you a friend request!`, "success", 0); loadFriends(); });
+    socket.on("friend_request_accepted", ({ by }) => { showStatus(`${by} accepted your friend request!`, "success"); loadFriends(); });
+
+    document.getElementById("connectBtn").addEventListener("click", () => {
+      if (!selectedFriend) { showStatus("Select a friend first", "error"); return; }
+      socket.emit("invite_friend", { friendUsername: selectedFriend });
+    });
+
+    socket.on("chat_status", ({ message, waiting }) => {
+      showStatus(message, waiting ? "waiting" : "error", waiting ? 0 : 3000);
+    });
+
+    socket.on("invite_declined", ({ by }) => showStatus(`${by} declined the chat`, "error"));
+    socket.on("invite_cancelled", ({ by }) => { hideInviteBanner(); showStatus(`${by} cancelled`, "info"); });
+
+    socket.on("incoming_invite", ({ from }) => {
+      pendingFrom = from;
+      document.getElementById("inviteText").textContent = `${from} wants to chat!`;
+      const banner = document.getElementById("inviteBanner");
+      banner.classList.remove("hidden");
+      requestAnimationFrame(() => banner.classList.add("show"));
+    });
+
+    document.getElementById("acceptInviteBtn").addEventListener("click", () => {
+      if (!pendingFrom) return;
+      socket.emit("accept_invite", { from: pendingFrom });
+    });
+
+    document.getElementById("declineInviteBtn").addEventListener("click", () => {
+      if (!pendingFrom) return;
+      socket.emit("decline_invite", { from: pendingFrom });
+      hideInviteBanner();
+    });
+
+    function hideInviteBanner() {
+      const banner = document.getElementById("inviteBanner");
+      banner.classList.remove("show");
+      setTimeout(() => banner.classList.add("hidden"), 300);
+      pendingFrom = null;
+    }
+
+    socket.on("go_to_chat", ({ friendUsername }) => {
+      hideInviteBanner();
+      sessionStorage.setItem("friendUsername", friendUsername);
+      sessionStorage.setItem("myUsername", myUsername);
+      document.body.style.opacity = "0";
+      setTimeout(() => { window.location.href = "/main.html"; }, 300);
+    });
+  </script>
+</body>
+</html>

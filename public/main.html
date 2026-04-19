@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instalk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style_main.css">
+</head>
+<body>
+
+  <div class="top">
+    <p class="heading">Instalk</p>
+    <div id="chatStatusBar" class="chat-status-bar"></div>
+  </div>
+
+  <div class="main">
+    <div class="friend inside">
+      <p class="people" id="friendName">Friend</p>
+      <div class="chatcase">
+        <div class="leftdiv">
+          <button class="leftbtn" id="friendStatusBtn" title="Friend status"></button>
+        </div>
+        <div class="chatbox">
+          <textarea id="friendTextarea" class="text-wrapper" readonly></textarea>
+        </div>
+        <div class="rightdiv">
+          <button class="rightbtn" id="copyFriendBtn" title="Copy">
+            <svg class="copy" viewBox="0 0 24 24">
+              <rect x="10" y="10" width="9" height="9" rx="2" />
+              <rect x="6" y="6" width="9" height="9" rx="2" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="you inside">
+      <p class="people" id="myName">You</p>
+      <div class="chatcase">
+        <div class="leftdiv">
+          <button class="leftbtn" id="myStatusBtn"
+            style="background-image: linear-gradient(to top, #0fd850 0%, #f9f047 100%);"
+            title="You are online"></button>
+        </div>
+        <div class="chatbox">
+          <textarea id="myTextarea" class="text-wrapper"></textarea>
+        </div>
+        <div class="rightdiv">
+          <button class="rightbtn" id="copyMeBtn" title="Copy">
+            <svg class="copy" viewBox="0 0 24 24">
+              <rect x="10" y="10" width="9" height="9" rx="2" />
+              <rect x="6" y="6" width="9" height="9" rx="2" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <button class="ghost-btn" id="endBtn">End</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const friendUsername = sessionStorage.getItem("friendUsername");
+    const myUsername     = sessionStorage.getItem("myUsername");
+
+    if (!friendUsername || !myUsername) {
+      window.location.href = "/friends.html";
+    }
+
+    document.getElementById("friendName").textContent = friendUsername;
+    document.getElementById("myName").textContent = myUsername;
+
+    window.addEventListener("load", () => {
+      requestAnimationFrame(() => { document.body.style.opacity = "1"; });
+    });
+
+    const socket = io();
+
+    socket.on("connect", () => {
+      socket.emit("register", myUsername);
+      socket.emit("get_friends_status");
+    });
+
+    socket.on("reconnect", () => {
+      socket.emit("register", myUsername);
+    });
+
+    socket.on("friends_status", statuses => updateFriendDot(statuses[friendUsername] === true));
+
+    socket.on("friend_status_change", ({ username, online }) => {
+      if (username === friendUsername) {
+        updateFriendDot(online);
+        showChatStatus(online ? `${friendUsername} is online` : `${friendUsername} went offline`, online ? "success" : "warn");
+        hideChatStatus();
+      }
+    });
+
+    function updateFriendDot(online) {
+      document.getElementById("friendStatusBtn").style.backgroundImage = online
+        ? "linear-gradient(to top, #0fd850 0%, #f9f047 100%)"
+        : "linear-gradient(to top, #ff0844 0%, #ffb199 100%)";
+    }
+
+    function showChatStatus(msg, type = "") {
+      const bar = document.getElementById("chatStatusBar");
+      bar.textContent = msg;
+      bar.className = "chat-status-bar show " + type;
+    }
+    function hideChatStatus(delay = 2500) {
+      setTimeout(() => { document.getElementById("chatStatusBar").className = "chat-status-bar"; }, delay);
+    }
+
+    
+    const myTextarea = document.getElementById("myTextarea");
+
+    myTextarea.addEventListener("input", () => {
+      socket.emit("typing_update", { text: myTextarea.value });
+    });
+
+    
+    socket.on("typing_update", ({ text }) => {
+      document.getElementById("friendTextarea").value = text;
+    });
+
+    
+    document.getElementById("copyFriendBtn").addEventListener("click", () => {
+      navigator.clipboard.writeText(document.getElementById("friendTextarea").value)
+        .then(() => flashBtn("copyFriendBtn"));
+    });
+    document.getElementById("copyMeBtn").addEventListener("click", () => {
+      navigator.clipboard.writeText(myTextarea.value)
+        .then(() => flashBtn("copyMeBtn"));
+    });
+
+    function flashBtn(id) {
+      const btn = document.getElementById(id);
+      btn.style.background = "#4CAF50";
+      setTimeout(() => btn.style.background = "", 500);
+    }
+
+    
+    document.getElementById("endBtn").addEventListener("click", () => {
+      socket.emit("end_chat");
+      sessionStorage.clear();
+      document.body.style.opacity = "0";
+      setTimeout(() => { window.location.href = "/friends.html"; }, 300);
+    });
+
+    socket.on("chat_ended", ({ by }) => {
+      showChatStatus(`${by} ended the chat`, "warn");
+      setTimeout(() => {
+        sessionStorage.clear();
+        document.body.style.opacity = "0";
+        setTimeout(() => { window.location.href = "/friends.html"; }, 300);
+      }, 1800);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Jersey 10', sans-serif;
+  letter-spacing: 1px;
+}
+
+body {
+  background: linear-gradient(to bottom, #323232 0%, #3F3F3F 40%, #000000 150%),
+              linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%);
+  background-blend-mode: multiply;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* ── Top bar ────────────────────────────────────────────────────────────────── */
+.top {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  color: rgb(255, 255, 255);
+  position: relative;
+}
+
+.heading {
+  font-size: 90px;
+  text-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+.logout-btn {
+  position: absolute;
+  right: 5%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #ccc;
+  border-radius: 10px;
+  padding: 6px 16px;
+  font-size: 18px;
+  font-family: 'Jersey 10', sans-serif;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.logout-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+/* ── Invite banner ──────────────────────────────────────────────────────────── */
+.invite-banner {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: linear-gradient(-180deg, rgba(255,255,255,0.6) 0%, rgba(200,200,200,0.9) 100%);
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 100;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-size: 22px;
+  white-space: nowrap;
+}
+.invite-banner.hidden { display: none; }
+.invite-banner.show {
+  display: flex;
+  transform: translateX(-50%) translateY(0);
+}
+
+.invite-actions { display: flex; gap: 8px; }
+.invite-btn {
+  font-family: 'Jersey 10', sans-serif;
+  font-size: 18px;
+  padding: 4px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+}
+.invite-btn:hover { transform: scale(1.08); }
+.invite-btn:active { transform: scale(0.95); }
+.invite-btn.accept { background: #4CAF50; color: white; }
+.invite-btn.decline { background: #e53935; color: white; }
+
+/* ── Status message ─────────────────────────────────────────────────────────── */
+.status-msg {
+  font-family: sans-serif;
+  font-size: 14px;
+  height: 20px;
+  color: transparent;
+  transition: color 0.3s, opacity 0.3s;
+  letter-spacing: 0;
+  text-align: center;
+  margin-bottom: 2px;
+}
+.status-msg.show { color: #555; }
+.status-msg.show.success { color: #2e7d32; }
+.status-msg.show.error { color: #c62828; }
+.status-msg.show.waiting { color: #888; }
+
+/* ── Main card ──────────────────────────────────────────────────────────────── */
+.main {
+  background: #C9CCD3;
+  background-image: linear-gradient(-180deg, rgba(255,255,255,0.50) 0%, rgba(0,0,0,0.50) 100%);
+  background-blend-mode: lighten;
+  width: 95%;
+  max-width: 750px;
+  min-width: 300px;
+  height: 55vh;
+  min-height: 300px;
+  border-radius: 50px;
+  box-shadow: 0px 0px 10px rgba(20,20,20,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 2%;
+  padding-bottom: 3%;
+  gap: 4%;
+}
+
+/* ── Add friend input ───────────────────────────────────────────────────────── */
+.add-friend {
+  flex: 1;
+  background-color: rgb(255,255,255);
+  border-radius: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  gap: 1%;
+  box-shadow: 0px 0px 10px rgba(20,20,20,0.4);
+  padding: 0% 5%;
+}
+
+.add {
+  flex: 1;
+  font-size: 30px;
+  font-family: 'Jersey 10', sans-serif;
+  width: 15%;
+  height: 36px;
+  min-width: 40px;
+  border-radius: 35px;
+  border: 2px solid rgb(150,150,150);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.add:hover { background: #eee; transform: scale(1.05); }
+.add:active { transform: scale(0.95); }
+
+.input {
+  flex: 4;
+  font-size: 30px;
+  font-family: 'Jersey 10', sans-serif;
+  padding-left: 5%;
+  padding-right: 5%;
+  border-radius: 35px;
+  width: 100%;
+  border: 2px solid rgb(150,150,150);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input:focus { border-color: #666; }
+
+/* ── Friends list container ─────────────────────────────────────────────────── */
+.friends {
+  flex: 5;
+  background-color: rgb(255,255,255);
+  box-shadow: 0px 0px 10px rgba(20,20,20,0.4);
+  border-radius: 35px;
+  overflow: hidden;
+  width: 80%;
+  height: 70%;
+}
+
+.dummy {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  padding-bottom: 8px;
+}
+
+.empty-msg {
+  margin-top: 20px;
+  color: #aaa;
+  font-family: sans-serif;
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+/* ── Friend row ─────────────────────────────────────────────────────────────── */
+.friend-list {
+  font-size: 28px;
+  background: #C9CCD3;
+  background-image: linear-gradient(-180deg, rgba(255,255,255,0.50) 0%, rgba(0,0,0,0.50) 100%);
+  background-blend-mode: lighten;
+  box-shadow: 0px 0px 5px rgba(20,20,20,0.4);
+  width: 90%;
+  min-height: 50px;
+  margin-top: 2%;
+  padding-left: 14px;
+  border: 1px solid rgb(35,35,35);
+  border-radius: 35px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s, background-color 0.15s;
+  animation: slideIn 0.25s ease forwards;
+  opacity: 0;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.friend-list:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.friend-list.selected {
+  outline: 3px solid #555;
+  transform: scale(1.02);
+}
+.friend-list:active { transform: scale(0.98); }
+
+/* Stagger animation for list items */
+.friend-list:nth-child(1) { animation-delay: 0.03s; }
+.friend-list:nth-child(2) { animation-delay: 0.07s; }
+.friend-list:nth-child(3) { animation-delay: 0.11s; }
+.friend-list:nth-child(4) { animation-delay: 0.15s; }
+.friend-list:nth-child(5) { animation-delay: 0.19s; }
+
+.friend-list.request-item {
+  background: linear-gradient(-180deg, rgba(255,255,255,0.7) 0%, rgba(220,240,220,0.9) 100%);
+  border-color: #4CAF50;
+}
+.friend-list.pending-item {
+  background: linear-gradient(-180deg, rgba(255,255,255,0.5) 0%, rgba(230,230,230,0.7) 100%);
+  cursor: default;
+  opacity: 0.75 !important;
+}
+
+.friend-name {
+  font-family: sans-serif;
+  font-size: 16px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0;
+}
+
+/* ── Right side of friend row ───────────────────────────────────────────────── */
+.activity-status {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 10px;
+  gap: 8px;
+}
+
+.status {
+  background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: 0px 0px 8px rgba(20,20,20,0.4);
+  border: 3px solid rgb(35,35,35);
+  transition: background-image 0.5s ease;
+  flex-shrink: 0;
+}
+
+.remove-btn {
+  background: rgba(200,50,50,0.15);
+  border: 1px solid rgba(200,50,50,0.3);
+  color: #c00;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.remove-btn:hover { background: rgba(200,50,50,0.3); transform: scale(1.15); }
+.remove-btn:active { transform: scale(0.9); }
+
+/* ── Request action buttons ─────────────────────────────────────────────────── */
+.request-actions { display: flex; gap: 6px; padding-right: 10px; }
+.req-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.15s;
+  font-family: sans-serif;
+}
+.req-btn:hover { transform: scale(1.15); }
+.req-btn:active { transform: scale(0.9); }
+.req-btn.accept-req { background: #4CAF50; color: white; }
+.req-btn.decline-req { background: #e53935; color: white; }
+
+/* ── Bottom buttons ─────────────────────────────────────────────────────────── */
+.bottom {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 5%;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.ghost-btn {
+  margin-top: 3%;
+  padding: 6px 22px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.1);
+  color: #ccc;
+  font-size: 22px;
+  font-family: 'Jersey 10', sans-serif;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0px 0px 10px rgba(20,20,20,0.4);
+}
+.ghost-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0px 0px 20px rgba(20,20,20,0.6);
+}
+.ghost-btn:active { transform: scale(0.97); }

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instalk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style_login.css">
+</head>
+<body>
+
+  <div class="top">
+    <p class="heading">Instalk</p>
+  </div>
+
+  <div class="main">
+    <div class="details">
+      <p class="enter-head">Register :</p>
+      <div class="enter-register">
+
+        <div class="take-input">
+          <label class="label" for="username">Username: </label>
+          <input id="username" class="input" type="text" name="username" placeholder="enter username...">
+        </div>
+
+        <div class="take-input">
+          <label class="label" for="password">Password:</label>
+          <input id="password" class="input" type="password" name="password" placeholder="enter password...">
+        </div>
+
+        <div class="take-input">
+          <label class="label" for="confirm">Confirm:</label>
+          <input id="confirm" class="input" type="password" name="confirm" placeholder="confirm password...">
+        </div>
+
+      </div>
+      <div id="formMsg" class="form-msg"></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <button id="registerBtn" class="ghost-btn">register</button>
+    <button onclick="window.location.href='/login.html'" class="ghost-btn">login</button>
+  </div>
+
+  <script>
+    function showMsg(msg, type) {
+      const el = document.getElementById("formMsg");
+      el.textContent = msg;
+      el.className = "form-msg show " + type;
+    }
+
+    document.getElementById("registerBtn").addEventListener("click", async () => {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const confirm  = document.getElementById("confirm").value;
+      if (!username || !password || !confirm) { showMsg("Please fill in all fields", "error"); return; }
+
+      const res = await fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, confirm })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showMsg("Registered! Redirecting...", "success");
+        setTimeout(() => { window.location.href = "/login.html"; }, 900);
+      } else {
+        showMsg(data.message, "error");
+      }
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Enter") document.getElementById("registerBtn").click();
+    });
+  </script>
+</body>
+</html>

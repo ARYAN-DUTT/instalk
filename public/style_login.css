@@ -1,0 +1,168 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Jersey 10', sans-serif;
+  letter-spacing: 1px;
+}
+
+body {
+  background: linear-gradient(to bottom, #323232 0%, #3F3F3F 40%, #000000 150%),
+              linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%);
+  background-blend-mode: multiply;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.top {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  color: rgb(255, 255, 255);
+}
+
+.heading {
+  font-size: 90px;
+  text-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+.main {
+  background: #C9CCD3;
+  background-image: linear-gradient(-180deg, rgba(255,255,255,0.50) 0%, rgba(0,0,0,0.50) 100%);
+  background-blend-mode: lighten;
+  width: 95%;
+  max-width: 750px;
+  min-width: 300px;
+  height: 55vh;
+  min-height: 300px;
+  border-radius: 50px;
+  box-shadow: 0px 0px 10px rgba(20,20,20,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 2%;
+  padding-bottom: 3%;
+}
+
+.details {
+  background-color: rgb(255, 255, 255);
+  width: 80%;
+  height: 80%;
+  border-radius: 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 15px rgba(0,0,0,0.7);
+}
+
+.enter-head {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  font-size: 50px;
+}
+
+.enter-register {
+  flex: 3;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8%;
+}
+
+.enter-login {
+  flex: 3;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16%;
+}
+
+.take-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  gap: 2%;
+}
+
+.label {
+  flex: 1;
+  font-size: 40px;
+}
+
+.input {
+  width: 100%;
+  border-radius: 20px;
+  padding: 10px;
+  font-size: 20px;
+  border: 2px solid black;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: sans-serif;
+}
+.input:focus { border-color: #555; }
+
+/* ── Status / error message ─────────────────────────────────────────────────── */
+.form-msg {
+  font-family: sans-serif;
+  font-size: 14px;
+  letter-spacing: 0;
+  height: 18px;
+  color: transparent;
+  transition: color 0.3s;
+  text-align: center;
+  margin-top: 6px;
+}
+.form-msg.show.error { color: #c62828; }
+.form-msg.show.success { color: #2e7d32; }
+
+.bottom {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 5%;
+  align-items: flex-start;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+/* ── Ghost button (matches logout style) ────────────────────────────────────── */
+.ghost-btn {
+  margin-top: 3%;
+  padding: 6px 22px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.1);
+  color: #ccc;
+  font-size: 22px;
+  font-family: 'Jersey 10', sans-serif;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0px 0px 10px rgba(20,20,20,0.4);
+}
+.ghost-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0px 0px 20px rgba(20,20,20,0.6);
+}
+.ghost-btn:active { transform: scale(0.97); }

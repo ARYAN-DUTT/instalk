@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instalk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style_login.css">
+</head>
+<body>
+
+  <div class="top">
+    <p class="heading">Instalk</p>
+  </div>
+
+  <div class="main">
+    <div class="details">
+      <p class="enter-head">Login :</p>
+      <div class="enter-login">
+
+        <div class="take-input">
+          <label class="label" for="username">Username: </label>
+          <input id="username" class="input" type="text" name="username" placeholder="enter username...">
+        </div>
+
+        <div class="take-input">
+          <label class="label" for="password">Password:</label>
+          <input id="password" class="input" type="password" name="password" placeholder="enter password...">
+        </div>
+
+      </div>
+      <div id="formMsg" class="form-msg"></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <button id="loginBtn" class="ghost-btn">login</button>
+    <button onclick="window.location.href='/register.html'" class="ghost-btn">register</button>
+  </div>
+
+  <script>
+    fetch("/me").then(r => r.json()).then(d => {
+      if (d.success) window.location.href = "/friends.html";
+    });
+
+    function showMsg(msg, type) {
+      const el = document.getElementById("formMsg");
+      el.textContent = msg;
+      el.className = "form-msg show " + type;
+    }
+
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      if (!username || !password) { showMsg("Please fill in all fields", "error"); return; }
+
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.body.style.opacity = "0";
+        setTimeout(() => { window.location.href = "/friends.html"; }, 300);
+      } else {
+        showMsg(data.message || "Invalid username or password", "error");
+      }
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Enter") document.getElementById("loginBtn").click();
+    });
+  </script>
+</body>
+</html>
