@@ -114,19 +114,19 @@
       setTimeout(() => { document.getElementById("chatStatusBar").className = "chat-status-bar"; }, delay);
     }
 
-    
+    // ── Realtime sync: every input event sends full textarea content ──────────
     const myTextarea = document.getElementById("myTextarea");
 
     myTextarea.addEventListener("input", () => {
       socket.emit("typing_update", { text: myTextarea.value });
     });
 
-    
+    // Receive friend's full textarea state
     socket.on("typing_update", ({ text }) => {
       document.getElementById("friendTextarea").value = text;
     });
 
-    
+    // ── Copy buttons ──────────────────────────────────────────────────────────
     document.getElementById("copyFriendBtn").addEventListener("click", () => {
       navigator.clipboard.writeText(document.getElementById("friendTextarea").value)
         .then(() => flashBtn("copyFriendBtn"));
@@ -142,7 +142,7 @@
       setTimeout(() => btn.style.background = "", 500);
     }
 
-    
+    // ── End ───────────────────────────────────────────────────────────────────
     document.getElementById("endBtn").addEventListener("click", () => {
       socket.emit("end_chat");
       sessionStorage.clear();

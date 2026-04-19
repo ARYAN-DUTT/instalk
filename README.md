@@ -86,4 +86,3 @@ Open two different browsers (e.g. Chrome + Firefox, or Chrome + Incognito):
   ```
 - Use HTTPS (required for secure cookies)
 - Consider `connect-sqlite3` or `better-sqlite3-session-store` for persistent sessions
-# instalk
