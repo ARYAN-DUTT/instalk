@@ -37,7 +37,7 @@ body {
   text-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
 
-/* ── Chat status bar ────────────────────────────────────────────────────────── */
+
 .chat-status-bar {
   font-family: sans-serif;
   font-size: 13px;
@@ -50,7 +50,7 @@ body {
 .chat-status-bar.show.success { color: #81c784; }
 .chat-status-bar.show.warn { color: #ffb74d; }
 
-/* ── Main card ──────────────────────────────────────────────────────────────── */
+
 .main {
   background: #C9CCD3;
   background-image: linear-gradient(-180deg, rgba(255,255,255,0.50) 0%, rgba(0,0,0,0.50) 100%);

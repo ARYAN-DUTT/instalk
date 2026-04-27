@@ -19,7 +19,7 @@ body {
   transition: opacity 0.3s ease;
 }
 
-/* ── Top bar ────────────────────────────────────────────────────────────────── */
+
 .top {
   flex: 1;
   display: flex;
@@ -55,7 +55,7 @@ body {
   color: #fff;
 }
 
-/* ── Invite banner ──────────────────────────────────────────────────────────── */
+
 .invite-banner {
   position: fixed;
   top: 0;
@@ -94,7 +94,7 @@ body {
 .invite-btn.accept { background: #4CAF50; color: white; }
 .invite-btn.decline { background: #e53935; color: white; }
 
-/* ── Status message ─────────────────────────────────────────────────────────── */
+
 .status-msg {
   font-family: sans-serif;
   font-size: 14px;
@@ -110,7 +110,7 @@ body {
 .status-msg.show.error { color: #c62828; }
 .status-msg.show.waiting { color: #888; }
 
-/* ── Main card ──────────────────────────────────────────────────────────────── */
+
 .main {
   background: #C9CCD3;
   background-image: linear-gradient(-180deg, rgba(255,255,255,0.50) 0%, rgba(0,0,0,0.50) 100%);
@@ -131,7 +131,7 @@ body {
   gap: 4%;
 }
 
-/* ── Add friend input ───────────────────────────────────────────────────────── */
+
 .add-friend {
   flex: 1;
   background-color: rgb(255,255,255);
@@ -174,7 +174,7 @@ body {
 }
 .input:focus { border-color: #666; }
 
-/* ── Friends list container ─────────────────────────────────────────────────── */
+
 .friends {
   flex: 5;
   background-color: rgb(255,255,255);
@@ -203,7 +203,7 @@ body {
   letter-spacing: 0;
 }
 
-/* ── Friend row ─────────────────────────────────────────────────────────────── */
+
 .friend-list {
   font-size: 28px;
   background: #C9CCD3;
@@ -240,7 +240,7 @@ body {
 }
 .friend-list:active { transform: scale(0.98); }
 
-/* Stagger animation for list items */
+
 .friend-list:nth-child(1) { animation-delay: 0.03s; }
 .friend-list:nth-child(2) { animation-delay: 0.07s; }
 .friend-list:nth-child(3) { animation-delay: 0.11s; }
@@ -266,7 +266,7 @@ body {
   letter-spacing: 0;
 }
 
-/* ── Right side of friend row ───────────────────────────────────────────────── */
+
 .activity-status {
   display: flex;
   justify-content: flex-end;
@@ -322,7 +322,7 @@ body {
 .req-btn.accept-req { background: #4CAF50; color: white; }
 .req-btn.decline-req { background: #e53935; color: white; }
 
-/* ── Bottom buttons ─────────────────────────────────────────────────────────── */
+
 .bottom {
   flex: 1;
   display: flex;
