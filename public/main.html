@@ -11,8 +11,15 @@
 <body>
 
   <div class="top">
-    <p class="heading">Instalk</p>
-    <div id="chatStatusBar" class="chat-status-bar"></div>
+    <div class="start">
+    </div>
+    <div class="start">
+      <p class="heading">Instalk</p>
+      <div id="chatStatusBar" class="chat-status-bar"></div>
+    </div>  
+    <div class="start">
+      <button class="dark" onclick="modeSwitch()"><span id="mode">Light</span></button>
+    </div>
   </div>
 
   <div class="main">
@@ -60,7 +67,7 @@
   </div>
 
   <div class="bottom">
-    <button class="ghost-btn" id="endBtn">End</button>
+    <button class="dark" id="endBtn" style="">End</button>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -159,6 +166,31 @@
         setTimeout(() => { window.location.href = "/friends.html"; }, 300);
       }, 1800);
     });
+
+
+    function modeSwitch(){
+      let main = document.querySelector(".main");
+      let heading =  document.querySelector(".heading");
+      if(document.getElementById("mode").innerHTML==="Light"){
+        // chance color
+        document.body.style.background= "#C9CCD3";
+        document.body.style.backgroundImage = "linear-gradient(-180deg, rgba(255,255,255,0.50) 0%, rgba(0,0,0,0.50) 100%)";
+        document.body.style.backgroundBlendMode = "lighten";
+        
+        main.style.backgroundColor = "grey";
+        heading.style.color= "grey";
+        heading.style.textShadow = "0 0 30px rgba(200,200,200,0.5)";
+        document.getElementById("mode").innerHTML="Dark";
+      } else if(document.getElementById("mode").innerHTML==="Dark"){
+        // chance color
+        document.body.style.background = "linear-gradient(to bottom, #323232 0%, #3F3F3F 40%, #000000 150%),linear-gradient(to top, rgba(255,255,255,0.90) 0%, rgba(0,0,0,0.25) 200%)";
+        document.body.style.backgroundBlendMode = "multiply";
+        main.style.backgroundColor = "";
+        heading.style.color= "";
+        heading.style.textShadow = "";
+        document.getElementById("mode").innerHTML="Light";
+      }
+    }
   </script>
 </body>
 </html>
